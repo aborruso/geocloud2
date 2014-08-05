@@ -9,10 +9,10 @@ class Sql
         $sqls[] = "ALTER TABLE settings.geometry_columns_join ADD COLUMN bitmapsource VARCHAR(255)";
         $sqls[] = "ALTER TABLE settings.geometry_columns_join ADD CONSTRAINT geometry_columns_join_key UNIQUE (_key_)";
         $sqls[] = "ALTER TABLE settings.geometry_columns_join ALTER data TYPE TEXT";
-        $sqls[] = "ALTER TABLE settings.geometry_columns_join ALTER sort_id set default 0";
+        $sqls[] = "ALTER TABLE settings.geometry_columns_join ALTER sort_id SET DEFAULT 0";
         $sqls[] = "UPDATE settings.geometry_columns_join SET sort_id = 0 WHERE sort_id IS NULL";
 
-        $sqls[] = "CREATE VIEW settings.geometry_columns_view AS
+        $sqls[] = "CREATE VIEW settings.geometry_columns_view_vector AS
                       SELECT
                         geometry_columns.f_table_schema,
                         geometry_columns.f_table_name,
@@ -48,8 +48,9 @@ class Sql
                         LEFT JOIN
                         settings.geometry_columns_join ON
                                                          geometry_columns.f_table_schema || '.' || geometry_columns.f_table_name || '.' || geometry_columns.f_geometry_column::text =
-                                                         geometry_columns_join._key_::text
-                      UNION ALL
+                                                         geometry_columns_join._key_::text";
+
+        $sqls[] = "CREATE VIEW settings.geometry_columns_view_raster AS
                       SELECT
                         raster_columns.r_table_schema as f_table_schema,
                         raster_columns.r_table_name as f_table_name,
@@ -87,6 +88,11 @@ class Sql
                                                          raster_columns.r_table_schema || '.' || raster_columns.r_table_name || '.' || raster_columns.r_raster_column::text =
                                                          geometry_columns_join._key_::text;
                     ";
+
+        $sqls[] = "CREATE VIEW settings.geometry_columns_view AS
+                      SELECT * FROM settings.geometry_columns_view_vector
+                        UNION ALL
+                      SELECT * FROM settings.geometry_columns_view_raster";
         return $sqls;
     }
 }
