@@ -115,7 +115,7 @@ $depth++;
     <!--<Lock/>-->
 </Operations>
 <?php
-$sql = "SELECT * FROM settings.geometry_columns_view WHERE f_table_schema='{$postgisschema}'";
+$sql = "SELECT * FROM settings.geometry_columns_view WHERE _key_ LIKE '{$postgisschema}.%'";
 $result = $postgisObject->execQuery($sql);
 if ($postgisObject->PDOerror) {
     makeExceptionReport($postgisObject->PDOerror);

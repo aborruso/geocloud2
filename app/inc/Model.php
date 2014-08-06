@@ -262,7 +262,7 @@ class Model
         } else {
             $_schema = str_replace(".", "", $_schema);
         }
-        $query = "SELECT * FROM settings.geometry_columns_view WHERE _key_ LIKE '{$_schema}.{$_table}%'";
+        $query = "SELECT * FROM settings.geometry_columns_view WHERE _key_ LIKE '{$_schema}.{$_table}.%'";
 
         $result = $this->execQuery($query);
         $row = $this->fetchRow($result);
